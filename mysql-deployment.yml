@@ -8,7 +8,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: standard-rwo
+  storageClassName: standard
 
 ---
 
@@ -17,6 +17,8 @@ kind: Deployment
 metadata:
   name: mysql
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: mysql
@@ -27,26 +29,24 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql:latest
-        imagePullPolicy: Always
+        image: mysql-projeto2:1.0
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3306
         env:
-            - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: my-secret
-                  key: ROOT_PASSWORD
-                  
-            - name: MYSQL_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: my-secret
-                  key: MYSQL_DATABASE
-
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: ROOT_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: MYSQL_DATABASE
         volumeMounts:
-        - mountPath: /var/lib/mysql/
-          name: mysql
+          - name: mysql
+            mountPath: /var/lib/mysql
       volumes:
         - name: mysql
           persistentVolumeClaim:
@@ -64,4 +64,3 @@ spec:
   selector:
     app: mysql
   clusterIP: None
-

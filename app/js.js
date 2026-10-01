@@ -1,17 +1,20 @@
-$("#btn_gravar").on("click", function() {
-    
+$("#btn_gravar").on("click", function () {
+
     var txt_nome = $("#nome").val();
-    var txt_mensagem = $("#mensagem").val(); 
+    var txt_email = $("#email").val();
+    var txt_comentario = $("#comentario").val();
 
     $.ajax({
-        url: "http://34.135.1.149/incluir.php",
+        url: "incluir.php",
         type: "post",
-        data: {nome: txt_nome, mensagem: txt_mensagem},
-        beforeSend: function() {
+        data: { nome: txt_nome, email: txt_email, comentario: txt_comentario },
+        beforeSend: function () {
             $("#resposta").html("Enviando......");
         }
-    }).done(function(e) {
-        $("#resposta").html("Dados salvos......");
-    })
+    }).done(function (e) {
+        $("#resposta").html(e);
+    }).fail(function () {
+        $("#resposta").html("Erro ao enviar os dados.");
+    });
 
-})
+});
